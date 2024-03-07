@@ -12,6 +12,7 @@ import wendy.tee.pickarestaurant.Enum.SessionStatus;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/session")
 public class SessionController {
@@ -23,12 +24,12 @@ public class SessionController {
     RestaurantService restaurantService;
 
     @GetMapping
-    public ResponseEntity<?> createNewSession() {
+    public ResponseEntity<?> initiateSession() {
 
         Session session = sessionService.createNewSession();
 
         if (session != null && session.getSessionCode() != null) {
-            return new ResponseEntity<>(session.getSessionCode(), HttpStatus.OK);
+            return new ResponseEntity<>(session, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

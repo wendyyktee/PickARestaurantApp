@@ -13,15 +13,28 @@ public class RestaurantService {
     @Autowired
     RestaurantRepository restaurantRepository;
 
-    public Restaurant addRestaurant(Long sessionId, String restaurantName, String voterName){
-        Restaurant restaurant = new Restaurant();
-        restaurant.setSessionId(sessionId);
-        restaurant.setRestaurantName(restaurantName);
-        restaurant.setVoterName(voterName);
+    @Autowired
+    ResultService resultService;
+
+    public Restaurant addRestaurant(Restaurant restaurant){
         return restaurantRepository.save(restaurant);
     }
 
     public List<Restaurant> findBySessionId(Long sessionId){
         return restaurantRepository.findBySessionId(sessionId);
+    }
+
+    public Restaurant randomPickARestaurantBySessionId(Long sessionId){
+        List<Restaurant> restaurantList = restaurantRepository.findBySessionId(sessionId);
+
+        int randomNumber = getRandomNumber(0, restaurantList.size()-1);
+        Restaurant restaurant = restaurantList.get(randomNumber);
+        resultService.addResult(sessionId, restaurant.getId(), restaurant.getRestaurantName());
+
+        return restaurant;
+    }
+
+    private int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }

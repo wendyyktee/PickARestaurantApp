@@ -1,0 +1,13 @@
+.header {
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: inherit;
+  position: relative;
+  background:  var(--blue-to-pink-to-purple-vertical-gradient);
+  font-size: x-large;
+  font-weight: bolder;
+}

@@ -16,6 +16,7 @@ import wendy.tee.pickarestaurant.Repository.SessionRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,6 +31,7 @@ public class SessionServiceTest {
     @InjectMocks
     SessionService sessionService;
 
+
     @DisplayName("When call method createNewSession, should create a new session and return the new session")
     @Test
     public void shouldCreateNewSessionWhenCalled() {
@@ -39,11 +41,12 @@ public class SessionServiceTest {
         newSession.setId(1l);
         newSession.setSessionCode("str1Ar4T54");
         newSession.setStatus(SessionStatus.ACTIVE);
+        newSession.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         newSession.setStartTime(currentTime);
 
         Mockito.when(sessionRepository.save(any())).thenReturn(newSession);
 
-        Session session = sessionService.createNewSession();
+        Session session = sessionService.createNewSession("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
 
         assertThat(session).isNotNull();
         assertThat(session.getId()).isEqualTo(1l);
@@ -60,6 +63,7 @@ public class SessionServiceTest {
         Session s1 = new Session();
         s1.setSessionCode(sessionCode);
         s1.setStatus(SessionStatus.ACTIVE);
+        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
         list1.add(s1);
 
@@ -71,6 +75,24 @@ public class SessionServiceTest {
         Assertions.assertThat(foundSession).contains(s1);
     }
 
+    @DisplayName("When call method findById, should return a optional Session object.")
+    @Test
+    public void givenSessionIdWhenFindByIdShouldReturnCorrectSession() {
+        Session s1 = new Session();
+        s1.setId(1l);
+        s1.setSessionCode("str1Ar4T62");
+        s1.setStatus(SessionStatus.ACTIVE);
+        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setStartTime(LocalDateTime.now());
+
+        Mockito.when(sessionRepository.findById(1l)).thenReturn(Optional.of(s1));
+
+        Optional<Session> optionalSession = sessionService.findById(1l);
+
+        Assertions.assertThat(optionalSession.isPresent()).isEqualTo(true);
+        Assertions.assertThat(optionalSession.get()).isEqualTo(s1);
+    }
+
     @DisplayName("When call method endSession, should update the status to CLOSED and end time to current time and return updated session.")
     @Test
     public void callEndSessionShouldReturnUpdatedSessionWithCLOSEDStatus() {
@@ -80,6 +102,7 @@ public class SessionServiceTest {
                             .id(1l)
                             .sessionCode("testing123")
                             .status(SessionStatus.ACTIVE)
+                            .initiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
                             .startTime(currentTime.minusMinutes(1))
                             .build();
 
@@ -87,6 +110,7 @@ public class SessionServiceTest {
                             .id(1l)
                             .sessionCode("testing123")
                             .status(SessionStatus.CLOSED)
+                            .initiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
                             .startTime(currentTime.minusMinutes(1))
                             .endTime(currentTime)
                             .build();

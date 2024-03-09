@@ -2,6 +2,7 @@ package wendy.tee.pickarestaurant.Repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -22,6 +23,7 @@ public class SessionRepositoryTest {
     @Autowired
     SessionRepository sessionRepository;
 
+
     @Test
     public void giveNewSessionWhenSaveThenSavedSuccess() {
         String sessionCode = "str1Ar4T54";
@@ -30,12 +32,14 @@ public class SessionRepositoryTest {
         Session newSession = new Session();
         newSession.setSessionCode(sessionCode);
         newSession.setStatus(SessionStatus.ACTIVE);
+        newSession.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         newSession.setStartTime(now);
 
         Session savedSession = sessionRepository.save(newSession);
 
         assertThat(savedSession).hasFieldOrPropertyWithValue("sessionCode", sessionCode);
         assertThat(savedSession).hasFieldOrPropertyWithValue("status", SessionStatus.ACTIVE);
+        assertThat(savedSession).hasFieldOrPropertyWithValue("initiatorHttpSessionId", "fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         assertThat(savedSession).hasFieldOrPropertyWithValue("startTime", now);
     }
 
@@ -46,18 +50,21 @@ public class SessionRepositoryTest {
         Session s1 = new Session();
         s1.setSessionCode(sessionCode);
         s1.setStatus(SessionStatus.ACTIVE);
+        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
         entityManager.persist(s1);
 
         Session s2 = new Session();
         s2.setSessionCode("trd1Ar4T62");
         s2.setStatus(SessionStatus.ACTIVE);
+        s2.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s2.setStartTime(LocalDateTime.now());
         entityManager.persist(s2);
 
         Session s3 = new Session();
         s3.setSessionCode("sec1Ar4T62");
         s3.setStatus(SessionStatus.ACTIVE);
+        s3.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s3.setStartTime(LocalDateTime.now());
         entityManager.persist(s3);
 
@@ -73,6 +80,7 @@ public class SessionRepositoryTest {
         Session s1 = new Session();
         s1.setSessionCode(sessionCode);
         s1.setStatus(SessionStatus.ACTIVE);
+        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
         entityManager.persist(s1);
 
@@ -85,6 +93,7 @@ public class SessionRepositoryTest {
         Session currentDbSession = sessionRepository.findById(s1.getId()).get();
         assertThat(currentDbSession.getId()).isEqualTo(s1.getId());
         assertThat(currentDbSession.getStatus()).isEqualTo(updatedSession.getStatus());
+        assertThat(currentDbSession.getInitiatorHttpSessionId()).isEqualTo(updatedSession.getInitiatorHttpSessionId());
         assertThat(currentDbSession.getEndTime()).isEqualTo(updatedSession.getEndTime());
     }
 }

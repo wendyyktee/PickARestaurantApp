@@ -1,0 +1,23 @@
+<div class="restaurant">
+  <div>
+    <div *ngIf="session.isInitiator">
+      <button>End Session</button>
+    </div>
+
+    <div>
+      <h3>Current Restaurants : </h3>
+      <button class="refresh-restaurant-button"  (click)="getRestaurantList()">Refresh</button>
+    </div>
+    <div class="restaurant-list">
+      <div tabindex="1" #restaurantListDiv class="restaurant-item" *ngFor="let restaurant of restaurants">
+        {{ restaurant.restaurantName }}
+      </div>
+    </div>
+
+  </div>
+  <div class="add-restaurant-section">
+    <input class="add-restaurant-text-box" type="text" [(ngModel)]="restaurantToAdd" />
+    <button class="add-restaurant-button"  (click)="addRestaurant()">Add Restaurant</button>
+
+  </div>
+</div>

@@ -21,6 +21,5 @@ public class Restaurant {
     private Long id;
 
     private String restaurantName;
-    private String voterName;
     private Long sessionId;
 }

@@ -19,6 +19,7 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sessionId;
-    private String selectedRestaurantId;
+    private Long sessionId;
+    private Long pickedRestaurantId;
+    private String pickedRestaurantName;
 }

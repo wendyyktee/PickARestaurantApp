@@ -11,5 +11,5 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     List<Session> findBySessionCodeAndStatus(String sessionCode, SessionStatus status);
 
-    List<Session> findBySessionCodeOrderByEndTimeDesc(String sessionCode);
+    List<Session> findBySessionCodeOrderByStartTimeDesc(String sessionCode);
 }

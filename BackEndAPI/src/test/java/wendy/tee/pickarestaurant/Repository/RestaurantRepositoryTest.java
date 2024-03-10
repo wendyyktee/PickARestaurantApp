@@ -1,5 +1,6 @@
 package wendy.tee.pickarestaurant.Repository;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,6 +20,7 @@ public class RestaurantRepositoryTest {
     @Autowired
     RestaurantRepository restaurantRepository;
 
+    @DisplayName("Given a new Restaurant object, when call save, should save the Restaurant and return the saved Restaurant")
     @Test
     public void giveNewRestaurantWhenSaveThenSavedSuccess() {
         Restaurant newRestaurant = new Restaurant();
@@ -31,6 +33,7 @@ public class RestaurantRepositoryTest {
         assertThat(savedRestaurant).hasFieldOrPropertyWithValue("sessionId", 100l);
     }
 
+    @DisplayName("Given session Id, when call findBySessionId, should return Session object with given session id.")
     @Test
     public void givenSessionIdWhenFindBySessionIdShouldReturnAllRestaurantWithCorrespondingSessionId() {
         Long sessionId = 300l;

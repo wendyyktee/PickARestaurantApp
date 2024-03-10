@@ -29,7 +29,7 @@ public class ResultController {
 
     @GetMapping("/{sessionCode}")
     public ResponseEntity<?> getResultBySessionCode(@PathVariable String sessionCode) {
-        List<Session> optionalSessionList = sessionService.findBySessionCode(sessionCode);
+        List<Session> optionalSessionList = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
 
         if (!optionalSessionList.isEmpty()) {
             Session session = optionalSessionList.get(0);

@@ -55,9 +55,9 @@ public class SessionServiceTest {
 
     }
 
-    @DisplayName("When call method findSessionBySessionCode, should return a corresponding session.")
+    @DisplayName("When call method findActiveSessionBySessionCode, should return list of active sessions with given sessionCode.")
     @Test
-    public void givenSessionCodeWhenFindSessionShouldReturnCorrectSession() {
+    public void givenSessionCodeWhenFindSessionShouldReturnListOfSessionWithGivenSessionCode() {
         String sessionCode = "str1Ar4T62";
         List<Session> list1 = new ArrayList<>();
         Session s1 = new Session();
@@ -75,9 +75,30 @@ public class SessionServiceTest {
         Assertions.assertThat(foundSession).contains(s1);
     }
 
+    @DisplayName("When call method findBySessionCodeOrderByStartTimeDesc, should return list of sessions with given sessionCode " +
+                 "order by StartTime desc .")
+    @Test
+    public void givenSessionCodeWhenfindBySessionCodeOrderByStartTimeDescShouldReturnListOfSessionWithGivenSessionCode() {
+        String sessionCode = "str1Ar4T62";
+        List<Session> list1 = new ArrayList<>();
+        Session s1 = new Session();
+        s1.setSessionCode(sessionCode);
+        s1.setStatus(SessionStatus.ACTIVE);
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setStartTime(LocalDateTime.now());
+        list1.add(s1);
+
+        Mockito.when(sessionRepository.findBySessionCodeOrderByStartTimeDesc(any())).thenReturn(list1);
+
+        List<Session> foundSession = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
+
+        Assertions.assertThat(foundSession).hasSize(1);
+        Assertions.assertThat(foundSession).contains(s1);
+    }
+
     @DisplayName("When call method findById, should return a optional Session object.")
     @Test
-    public void givenSessionIdWhenFindByIdShouldReturnCorrectSession() {
+    public void givenSessionIdWhenFindByIdShouldReturnSessionWithGivenSessionCode() {
         Session s1 = new Session();
         s1.setId(1l);
         s1.setSessionCode("str1Ar4T62");
@@ -102,7 +123,7 @@ public class SessionServiceTest {
                             .id(1l)
                             .sessionCode("testing123")
                             .status(SessionStatus.ACTIVE)
-                            .initiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
+                            .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
                             .startTime(currentTime.minusMinutes(1))
                             .build();
 
@@ -110,7 +131,7 @@ public class SessionServiceTest {
                             .id(1l)
                             .sessionCode("testing123")
                             .status(SessionStatus.CLOSED)
-                            .initiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
+                            .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
                             .startTime(currentTime.minusMinutes(1))
                             .endTime(currentTime)
                             .build();

@@ -2,7 +2,6 @@ package wendy.tee.pickarestaurant.Service;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import wendy.tee.pickarestaurant.Enum.SessionStatus;
 import wendy.tee.pickarestaurant.Model.Session;
@@ -28,20 +27,12 @@ public class SessionService {
         return sessionRepository.save(newSession);
     }
 
-//    public SessionResponse convertSessionToSessionResponse(Session session){
-//        SessionResponse response = new SessionResponse();
-//        response.setId(session.getId());
-//        response.setSessionCode(session.getSessionCode());
-//        response.setStatus(session.getStatus());
-//        return response;
-//    }
-
     public List<Session> findActiveSessionBySessionCode(String sessionCode) {
         return sessionRepository.findBySessionCodeAndStatus(sessionCode, SessionStatus.ACTIVE);
     }
 
-    public List<Session> findBySessionCode(String sessionCode) {
-        return sessionRepository.findBySessionCodeOrderByEndTimeDesc(sessionCode);
+    public List<Session> findBySessionCodeOrderByStartTimeDesc(String sessionCode) {
+        return sessionRepository.findBySessionCodeOrderByStartTimeDesc(sessionCode);
     }
 
     public Optional<Session> findById(Long sessionId) {

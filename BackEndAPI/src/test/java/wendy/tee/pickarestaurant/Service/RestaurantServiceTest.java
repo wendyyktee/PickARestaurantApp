@@ -84,9 +84,9 @@ public class RestaurantServiceTest {
         Assertions.assertThat(restaurantList).contains(r1, r2, r3);
     }
 
-    @DisplayName("When call method findById, should return a optional Session object.")
+    @DisplayName("When call method randomPickARestaurantBySessionId, should return a optional Session object.")
     @Test
-    public void givenSessionIdWhenFindByIdShouldReturnCorrectSession() {
+    public void GivenSessionIdWhenCallRandomPickARestaurantBySessionIdShouldReturnARestaurantFromListOfRestaurants() {
         List<Restaurant> list1 = new ArrayList<>();
         Restaurant r1 = new Restaurant();
         r1.setId(300l);

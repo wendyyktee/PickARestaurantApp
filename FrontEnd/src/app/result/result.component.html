@@ -1,0 +1,13 @@
+<div class="result">
+  <div *ngIf="pickedRestaurantName; else sessionEnd">
+    <h2>The Chosen Restaurant is </h2>
+    <p class="picked-restaurant">{{pickedRestaurantName}}</p>
+  </div>
+  <ng-template #sessionEnd>
+    <h1>Session End!</h1>
+  </ng-template>
+  <div>
+    <button class="home-button" (click)="backToHome()" >Back to Home</button>
+  </div>
+</div>
+

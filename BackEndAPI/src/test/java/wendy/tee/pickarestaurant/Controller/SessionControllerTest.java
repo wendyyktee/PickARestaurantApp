@@ -53,7 +53,7 @@ public class SessionControllerTest {
         newSession.setId(1l);
         newSession.setSessionCode("str1Ar4T54");
         newSession.setStatus(SessionStatus.ACTIVE);
-        newSession.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        newSession.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         newSession.setStartTime(currentTime);
 
         Mockito.when(sessionService.createNewSession(any())).thenReturn(newSession);
@@ -107,7 +107,7 @@ public class SessionControllerTest {
         s1.setId(1l);
         s1.setSessionCode("str1Ar4T54");
         s1.setStatus(SessionStatus.CLOSED);
-        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now().minusHours(3));
         s1.setEndTime(LocalDateTime.now().minusHours(2));
         sessionList.add(s1);
@@ -131,7 +131,7 @@ public class SessionControllerTest {
         s1.setId(1l);
         s1.setSessionCode("str1Ar4T54");
         s1.setStatus(SessionStatus.CLOSED);
-        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now().minusHours(3));
         s1.setEndTime(LocalDateTime.now().minusMinutes(2));
         sessionList.add(s1);
@@ -163,7 +163,7 @@ public class SessionControllerTest {
         s1.setId(1l);
         s1.setSessionCode("str1Ar4T54");
         s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
         sessionList.add(s1);
 

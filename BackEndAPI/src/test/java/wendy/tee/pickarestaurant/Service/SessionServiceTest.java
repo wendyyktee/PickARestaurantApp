@@ -41,7 +41,7 @@ public class SessionServiceTest {
         newSession.setId(1l);
         newSession.setSessionCode("str1Ar4T54");
         newSession.setStatus(SessionStatus.ACTIVE);
-        newSession.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        newSession.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         newSession.setStartTime(currentTime);
 
         Mockito.when(sessionRepository.save(any())).thenReturn(newSession);
@@ -63,7 +63,7 @@ public class SessionServiceTest {
         Session s1 = new Session();
         s1.setSessionCode(sessionCode);
         s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
         list1.add(s1);
 
@@ -82,7 +82,7 @@ public class SessionServiceTest {
         s1.setId(1l);
         s1.setSessionCode("str1Ar4T62");
         s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorHttpSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
 
         Mockito.when(sessionRepository.findById(1l)).thenReturn(Optional.of(s1));

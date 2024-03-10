@@ -27,11 +27,14 @@ public class RestaurantService {
     public Restaurant randomPickARestaurantBySessionId(Long sessionId){
         List<Restaurant> restaurantList = restaurantRepository.findBySessionId(sessionId);
 
-        int randomNumber = getRandomNumber(0, restaurantList.size()-1);
-        Restaurant restaurant = restaurantList.get(randomNumber);
-        resultService.addResult(sessionId, restaurant.getId(), restaurant.getRestaurantName());
+        if(!restaurantList.isEmpty()){
+            int randomNumber = getRandomNumber(0, restaurantList.size()-1);
+            Restaurant restaurant = restaurantList.get(randomNumber);
+            resultService.addResult(sessionId, restaurant.getId(), restaurant.getRestaurantName());
 
-        return restaurant;
+            return restaurant;
+        }
+        return null;
     }
 
     private int getRandomNumber(int min, int max) {

@@ -9,13 +9,19 @@ import { RestaurantComponent } from './restaurant/restaurant.component';
 import { HttpClientModule } from '@angular/common/http';
 import {FormsModule} from "@angular/forms";
 import {SessionDataService} from "./session-data.service";
-
+import { CookieService } from 'ngx-cookie-service';
+import { ResultComponent } from './result/result.component';
+import { InvalidSessionPopupComponent } from './invalid-session-popup/invalid-session-popup.component';
+import { CommonErrorPopupComponent } from './common-error-popup/common-error-popup.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
     SessionComponent,
-    RestaurantComponent
+    RestaurantComponent,
+    ResultComponent,
+    InvalidSessionPopupComponent,
+    CommonErrorPopupComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +29,7 @@ import {SessionDataService} from "./session-data.service";
     HttpClientModule,
     FormsModule
   ],
-  providers: [SessionDataService],
+  providers: [ SessionDataService, CookieService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

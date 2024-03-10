@@ -23,7 +23,7 @@ public class Session {
 
     private String sessionCode;
     private SessionStatus status;
-    private String initiatorHttpSessionId;
+    private String initiatorUserSessionId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 

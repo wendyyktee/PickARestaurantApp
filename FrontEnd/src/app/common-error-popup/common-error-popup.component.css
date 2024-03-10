@@ -1,0 +1,20 @@
+::ng-deep .my-custom-panel {
+  width: fit-content;
+  height: fit-content;
+}
+
+.pop-up-div {
+  padding: 0.5rem
+}
+
+.mat-dialog-content-div {
+  padding: 0.5rem 0.1rem
+}
+
+.mat-dialog-actions-div {
+  padding: 0.8rem 0 0.3rem 0.5rem;
+}
+
+.mat-button-close {
+  padding: 0.4rem 0.6rem;
+}

@@ -7,15 +7,15 @@ export class SessionDataService {
     id: 0,
     sessionCode: '',
     status: '',
-    isInitiator: false,
+    initiatorUserSessionId: '',
   };
 
   getSession(){
     return this.session;
   }
 
-  setIsInitiator(isInitiator: boolean){
-    this.session.isInitiator = isInitiator;
+  setInitiatorUserSessionId(initiatorUserSessionId: string){
+    this.session.initiatorUserSessionId = initiatorUserSessionId;
   }
 
   setId(sessionId: number){

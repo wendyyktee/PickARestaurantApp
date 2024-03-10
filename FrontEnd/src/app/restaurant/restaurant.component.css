@@ -5,30 +5,42 @@
 .restaurant-list {
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  font-size: 15px;
-  font-weight: 500;
+  padding: 4px;
+  font-size: 16px;
+  font-weight: 400;
   height: 550px;
   overflow: scroll;
   border: solid 1px darkgreen;
 }
 
+.restaurant-list-notes {
+  font-size: 13px;
+  color: darkslategrey;
+  margin-block-end: 4px;
+}
 .add-restaurant-section {
   position:fixed;
 }
 
 .add-restaurant-text-box {
-  padding: 10px;
+  padding: 8px;
   font-size: 16px;
+  border-radius: 6px;
 }
 
 .add-restaurant-button {
-  padding: 10px;
+  padding: 8px;
   background-color: aquamarine;
   font-weight: 600;
   font-size: 16px;
   border-color: cornflowerblue;
   border-style: wave;
+  border-radius: 6px;
 }
 
+.refresh-restaurant-button {
+  padding: 4px 13px;
+  background-color: whitesmoke;
+  border-radius: 6px;
+}
 

@@ -1,3 +1,6 @@
-<div *ngIf="isValidSession">
+<div class="session-container" *ngIf="isValidSession">
+  <div class="button-session" *ngIf="isInitiator">
+    <button class="end-session-button" (click)="endSession()">End Session</button>
+  </div>
   <app-restaurant></app-restaurant>
 </div>

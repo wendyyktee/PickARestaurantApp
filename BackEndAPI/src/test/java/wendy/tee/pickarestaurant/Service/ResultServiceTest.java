@@ -1,6 +1,7 @@
 package wendy.tee.pickarestaurant.Service;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,48 +29,50 @@ public class ResultServiceTest {
     @InjectMocks
     ResultService resultService;
 
+    private String sessionId;
+    private Result result;
+
+    @BeforeEach
+    public void setup() {
+        sessionId = "s9n10gm7PXKn";
+        result = Result
+                .builder()
+                .id(111L)
+                .sessionId(sessionId)
+                .pickedRestaurantId(222L)
+                .pickedRestaurantName("KFFF")
+                .build();
+    }
+
     @DisplayName("When call method addResult, should create a new Result record and return the newly created Result")
     @Test
     public void givenANewResultShouldSaveARestaurant() {
-        Result result = new Result();
-        result.setId(1L);
-        result.setSessionId(2000L);
-        result.setPickedRestaurantId(3000L);
-        result.setPickedRestaurantName("Xiao Fang cafe");
-
         Mockito.when(resultRepository.save(any())).thenReturn(result);
 
-        Result createdResult = resultService.addResult(2000L, 3000L, "Xiao Fang cafe");
+        Result createdResult = resultService.addResult(sessionId, 222L, "KFFF");
 
         assertThat(createdResult).isNotNull();
-        assertThat(createdResult.getId()).isEqualTo(1L);
-        assertThat(createdResult.getSessionId()).isEqualTo(2000L);
-        assertThat(createdResult.getPickedRestaurantId()).isEqualTo(3000L);
-        assertThat(createdResult.getPickedRestaurantName()).isEqualTo("Xiao Fang cafe");
+        assertThat(createdResult.getId()).isEqualTo(111L);
+        assertThat(createdResult.getSessionId()).isEqualTo(sessionId);
+        assertThat(createdResult.getPickedRestaurantId()).isEqualTo(222L);
+        assertThat(createdResult.getPickedRestaurantName()).isEqualTo("KFFF");
     }
 
     @DisplayName("When call method findBySessionId, should return list of restaurant for the session id")
     @Test
     public void givenSessionIdShouldReturnListOfRestaurantWithCorrespondingSessionId() {
-        List<Result> list1 = new ArrayList<>();
-        Result result = new Result();
-        result.setId(1L);
-        result.setSessionId(2000L);
-        result.setPickedRestaurantId(3000L);
-        result.setPickedRestaurantName("Xiao Fang cafe");
+        List<Result> resultList = new ArrayList<>();
+        resultList.add(result);
 
-        list1.add(result);
+        Mockito.when(resultRepository.findBySessionId(sessionId)).thenReturn(resultList);
 
-        Mockito.when(resultRepository.findBySessionId(2000L)).thenReturn(list1);
-
-        Result queryResult = resultService.findBySessionId(2000L);
+        Result queryResult = resultService.findBySessionId(sessionId);
 
         Assertions.assertThat(queryResult).isNotNull();
         assertThat(queryResult).isNotNull();
-        assertThat(queryResult.getId()).isEqualTo(1L);
-        assertThat(queryResult.getSessionId()).isEqualTo(2000L);
-        assertThat(queryResult.getPickedRestaurantId()).isEqualTo(3000L);
-        assertThat(queryResult.getPickedRestaurantName()).isEqualTo("Xiao Fang cafe");
+        assertThat(queryResult.getId()).isEqualTo(111L);
+        assertThat(queryResult.getSessionId()).isEqualTo(sessionId);
+        assertThat(queryResult.getPickedRestaurantId()).isEqualTo(222L);
+        assertThat(queryResult.getPickedRestaurantName()).isEqualTo("KFFF");
     }
-
 }

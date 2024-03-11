@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
 
-    List<Result> findBySessionId(Long sessionId);
+    List<Result> findBySessionId(String sessionId);
 }

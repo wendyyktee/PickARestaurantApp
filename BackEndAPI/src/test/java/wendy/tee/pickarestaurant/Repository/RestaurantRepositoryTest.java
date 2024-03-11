@@ -20,23 +20,24 @@ public class RestaurantRepositoryTest {
     @Autowired
     RestaurantRepository restaurantRepository;
 
-    @DisplayName("Given a new Restaurant object, when call save, should save the Restaurant and return the saved Restaurant")
+    @DisplayName("Given a new Restaurant, when Save, should save the Restaurant and return the saved Restaurant")
     @Test
     public void giveNewRestaurantWhenSaveThenSavedSuccess() {
         Restaurant newRestaurant = new Restaurant();
         newRestaurant.setRestaurantName("Danny's Cafe");
-        newRestaurant.setSessionId(100L);
+        newRestaurant.setSessionId("s9n10gm7PXKn");
 
         Restaurant savedRestaurant = restaurantRepository.save(newRestaurant);
 
+        assertThat(savedRestaurant).hasFieldOrProperty("id").isNotNull();
         assertThat(savedRestaurant).hasFieldOrPropertyWithValue("restaurantName", "Danny's Cafe");
-        assertThat(savedRestaurant).hasFieldOrPropertyWithValue("sessionId", 100L);
+        assertThat(savedRestaurant).hasFieldOrPropertyWithValue("sessionId", "s9n10gm7PXKn");
     }
 
-    @DisplayName("Given session Id, when call findBySessionId, should return Session object with given session id.")
+    @DisplayName("Given session Id, when call findBySessionId, should return Session with given session id.")
     @Test
     public void givenSessionIdWhenFindBySessionIdShouldReturnAllRestaurantWithCorrespondingSessionId() {
-        Long sessionId = 300L;
+        String sessionId = "s9n10gm7PXKn";
         Restaurant r1 = new Restaurant();
         r1.setRestaurantName("Danny's Cafe");
         r1.setSessionId(sessionId);
@@ -49,7 +50,7 @@ public class RestaurantRepositoryTest {
 
         Restaurant r3 = new Restaurant();
         r3.setRestaurantName("Kam Fung Restaurant");
-        r3.setSessionId(400L);
+        r3.setSessionId("ten10gm7PXyx");
         entityManager.persist(r3);
 
         List<Restaurant> dbRestaurantList = restaurantRepository.findBySessionId(sessionId);

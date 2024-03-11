@@ -1,6 +1,8 @@
 package wendy.tee.pickarestaurant.Service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,84 +33,43 @@ public class SessionServiceTest {
     @InjectMocks
     SessionService sessionService;
 
+    @Mock
+    RestaurantService restaurantService;
+
+    private LocalDateTime currentTime;
+    private String sessionId;
+
+    @BeforeEach
+    public void setup(){
+        currentTime = LocalDateTime.now();
+        sessionId = "s9n10gm7PXKn";
+    }
 
     @DisplayName("When call method createNewSession, should create a new session and return the new session")
     @Test
     public void shouldCreateNewSessionWhenCalled() {
-        LocalDateTime currentTime = LocalDateTime.now();
-
-        Session newSession = new Session();
-        newSession.setId(1L);
-        newSession.setSessionCode("str1Ar4T54");
-        newSession.setStatus(SessionStatus.ACTIVE);
-        newSession.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        newSession.setStartTime(currentTime);
+        Session newSession = createSession();
 
         Mockito.when(sessionRepository.save(any())).thenReturn(newSession);
 
-        Session session = sessionService.createNewSession("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        Session createdSession = sessionService.createNewSession("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
 
-        assertThat(session).isNotNull();
-        assertThat(session.getId()).isEqualTo(1L);
-        assertThat(session.getStatus()).isEqualTo(SessionStatus.ACTIVE);
-        assertThat(session.getStartTime()).isEqualTo(currentTime);
-
+        assertThat(createdSession).isNotNull();
+        assertThat(createdSession.getId()).isEqualTo(sessionId);
+        assertThat(createdSession.getStatus()).isEqualTo(newSession.getStatus());
+        assertThat(createdSession.getInitiatorUserSessionId()).isEqualTo(newSession.getInitiatorUserSessionId());
+        assertThat(createdSession.getStartTime()).isEqualTo(newSession.getStartTime());
     }
 
-    @DisplayName("When call method findActiveSessionBySessionCode, should return list of active sessions with given sessionCode.")
-    @Test
-    public void givenSessionCodeWhenFindSessionShouldReturnListOfSessionWithGivenSessionCode() {
-        String sessionCode = "str1Ar4T62";
-        List<Session> list1 = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setSessionCode(sessionCode);
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now());
-        list1.add(s1);
-
-        Mockito.when(sessionRepository.findBySessionCodeAndStatus(any(), any())).thenReturn(list1);
-
-        List<Session> foundSession = sessionService.findActiveSessionBySessionCode(sessionCode);
-
-        Assertions.assertThat(foundSession).hasSize(1);
-        Assertions.assertThat(foundSession).contains(s1);
-    }
-
-    @DisplayName("When call method findBySessionCodeOrderByStartTimeDesc, should return list of sessions with given sessionCode " +
-                 "order by StartTime desc .")
-    @Test
-    public void givenSessionCodeWhenfindBySessionCodeOrderByStartTimeDescShouldReturnListOfSessionWithGivenSessionCode() {
-        String sessionCode = "str1Ar4T62";
-        List<Session> list1 = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setSessionCode(sessionCode);
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now());
-        list1.add(s1);
-
-        Mockito.when(sessionRepository.findBySessionCodeOrderByStartTimeDesc(any())).thenReturn(list1);
-
-        List<Session> foundSession = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
-
-        Assertions.assertThat(foundSession).hasSize(1);
-        Assertions.assertThat(foundSession).contains(s1);
-    }
 
     @DisplayName("When call method findById, should return a optional Session object.")
     @Test
     public void givenSessionIdWhenFindByIdShouldReturnSessionWithGivenSessionCode() {
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T62");
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now());
+        Session s1 = createSession();
 
-        Mockito.when(sessionRepository.findById(1L)).thenReturn(Optional.of(s1));
+        Mockito.when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(s1));
 
-        Optional<Session> optionalSession = sessionService.findById(1L);
+        Optional<Session> optionalSession = sessionService.findById(sessionId);
 
         Assertions.assertThat(optionalSession.isPresent()).isEqualTo(true);
         Assertions.assertThat(optionalSession.get()).isEqualTo(s1);
@@ -119,27 +80,25 @@ public class SessionServiceTest {
     public void callEndSessionShouldReturnUpdatedSessionWithCLOSEDStatus() {
         LocalDateTime currentTime = LocalDateTime.now();
 
-        Session s1 = Session.builder()
-                            .id(1L)
-                            .sessionCode("testing123")
-                            .status(SessionStatus.ACTIVE)
-                            .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
-                            .startTime(currentTime.minusMinutes(1))
-                            .build();
-
-        Session s2 = Session.builder()
-                            .id(1L)
-                            .sessionCode("testing123")
-                            .status(SessionStatus.CLOSED)
-                            .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
-                            .startTime(currentTime.minusMinutes(1))
-                            .endTime(currentTime)
-                            .build();
+        Session s1 = createSession();
+        Session s2 = createSession();
+        s2.setStatus(SessionStatus.CLOSED);
+        s2.setEndTime(currentTime);
 
         Mockito.when(sessionRepository.save(any())).thenReturn(s2);
+
         Session updatedSession = sessionService.endSession(s1);
 
         Assertions.assertThat(updatedSession.getStatus()).isEqualTo(SessionStatus.CLOSED);
         Assertions.assertThat(updatedSession.getEndTime()).isEqualTo(currentTime);
+    }
+
+    private Session createSession(){
+        return Session.builder()
+                            .id(sessionId)
+                            .status(SessionStatus.ACTIVE)
+                            .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
+                            .startTime(currentTime)
+                            .build();
     }
 }

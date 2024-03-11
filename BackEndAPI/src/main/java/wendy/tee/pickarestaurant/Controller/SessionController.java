@@ -10,12 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wendy.tee.pickarestaurant.Enum.SessionStatus;
 import wendy.tee.pickarestaurant.Model.Session;
-import wendy.tee.pickarestaurant.Service.RestaurantService;
-import wendy.tee.pickarestaurant.Service.ResultService;
 import wendy.tee.pickarestaurant.Service.SessionService;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/session")
@@ -24,12 +22,6 @@ public class SessionController {
 
     @Autowired
     SessionService sessionService;
-
-    @Autowired
-    RestaurantService restaurantService;
-
-    @Autowired
-    ResultService resultService;
 
     private Logger logger = LoggerFactory.getLogger(
             SessionController.class);
@@ -47,13 +39,7 @@ public class SessionController {
         Session session = sessionService.createNewSession(httpSession.getId());
 
         if (session != null) {
-            if (session.getSessionCode() != null) {
-                return new ResponseEntity<>(session, HttpStatus.OK);
-            }
-            else {
-                logger.error("Session initialize failed - Session created without sessionCode");
-                return new ResponseEntity<>("Session initialize error", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            return new ResponseEntity<>(session, HttpStatus.OK);
         }
         else {
             logger.error("Session initialize failed - No session created");
@@ -69,16 +55,16 @@ public class SessionController {
      * 3. Valid session - session code exists in Database
      * and (session_status = ACTIVE or (session_status = CLOSED & end_time < 1 hour))
      *
-     * @param sessionCode - Session.sessionCode
+     * @param sessionId - Session.id
      * @return - Session object if session code provided is valid
      * @return - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      */
-    @GetMapping(value = "/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> validateSession(@PathVariable String sessionCode) {
-        List<Session> optionalSessionList = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
+    @GetMapping(value = "/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> validateSession(@PathVariable String sessionId) {
+        Optional<Session> optionalSession = sessionService.findById(sessionId);
 
-        if (!optionalSessionList.isEmpty()) {
-            Session session = optionalSessionList.get(0);
+        if (optionalSession.isPresent()) {
+            Session session = optionalSession.get();
             if (session.getStatus().equals(SessionStatus.ACTIVE)
                 || (session.getStatus().equals(SessionStatus.CLOSED)
                     && session.getEndTime().isAfter(LocalDateTime.now().minusHours(1)))) {
@@ -91,7 +77,7 @@ public class SessionController {
     }
 
     /**
-     * @param sessionCode   - sessionCode for the session
+     * @param sessionId     - sessionCode for the session
      * @param userSessionId - used to verify if the requestor is the user who initiate the session,
      *                      userSessionID provided here should be the same userSessionId when initiate the session
      * @return - HttpStatus.OK & picked restaurant name if the session ended successfully
@@ -99,19 +85,17 @@ public class SessionController {
      * - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      * - HttpStatus.UNAUTHORIZED if the userSessionId is not same as the initiatorUserSessionId
      */
-    @GetMapping(value = "/endSession/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> endSession(@PathVariable String sessionCode, @RequestParam String userSessionId) {
+    @GetMapping(value = "/endSession/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> endSession(@PathVariable String sessionId, @RequestParam String userSessionId) {
+        Optional<Session> optionalSession = sessionService.findById(sessionId);
 
-        List<Session> optionalSessionList = sessionService.findActiveSessionBySessionCode(sessionCode);
-
-        if (!optionalSessionList.isEmpty()) {
-            Session session = optionalSessionList.get(0);
+        if (optionalSession.isPresent()) {
+            Session session = optionalSession.get();
 
             if (session.getInitiatorUserSessionId().equalsIgnoreCase(userSessionId)) {
                 if (session.getStatus().equals(SessionStatus.ACTIVE)) {
 
                     try {
-                        restaurantService.randomPickARestaurantBySessionId(session.getId());
                         sessionService.endSession(session);
                         return new ResponseEntity<>(HttpStatus.OK);
                     }

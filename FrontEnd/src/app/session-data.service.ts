@@ -5,7 +5,7 @@ import {Session} from "./session/session.model";
 export class SessionDataService {
   session: Session = {
     id: 0,
-    sessionCode: '',
+    // sessionCode: '',
     status: '',
     initiatorUserSessionId: '',
   };
@@ -22,9 +22,9 @@ export class SessionDataService {
     this.session.id = sessionId;
   }
 
-  setSessionCode(sessionCode: string){
-    this.session.sessionCode = sessionCode;
-  }
+  // setSessionCode(sessionCode: string){
+  //   this.session.sessionCode = sessionCode;
+  // }
 
   setStatus(status: string){
     this.session.status = status;

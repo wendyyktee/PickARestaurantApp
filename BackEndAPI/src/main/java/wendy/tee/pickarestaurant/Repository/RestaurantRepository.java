@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
-    List<Restaurant> findBySessionId(Long sessionId);
+    List<Restaurant> findBySessionId(String sessionId);
 }

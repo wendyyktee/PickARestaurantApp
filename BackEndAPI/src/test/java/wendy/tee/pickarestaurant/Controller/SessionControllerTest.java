@@ -1,5 +1,6 @@
 package wendy.tee.pickarestaurant.Controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,8 +16,7 @@ import wendy.tee.pickarestaurant.Service.ResultService;
 import wendy.tee.pickarestaurant.Service.SessionService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,29 +38,38 @@ public class SessionControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    private LocalDateTime currentTime;
+    private String sessionId;
+    private String initiatorUserSessionId;
+    private Session activeSession;
+
+    @BeforeEach
+    public void setup() {
+        currentTime = LocalDateTime.now();
+        sessionId = "s9n10gm7PXKn";
+        initiatorUserSessionId = "fnqwue3h1o8yr012porjnpqfnvoq283yr10iej";
+        activeSession = Session.builder()
+                               .id(sessionId)
+                               .status(SessionStatus.ACTIVE)
+                               .initiatorUserSessionId(initiatorUserSessionId)
+                               .startTime(currentTime)
+                               .build();
+    }
+
     @DisplayName("When initiate session, should return a new session")
     @Test
     public void whenInitiateSessionShouldReturnANewSessionWithStatusOK() throws Exception {
-        LocalDateTime currentTime = LocalDateTime.now();
         int len = currentTime.toString().length();
         String currentTimeStr = currentTime.toString().substring(0, len - 2);
 
-        Session newSession = new Session();
-        newSession.setId(1L);
-        newSession.setSessionCode("str1Ar4T54");
-        newSession.setStatus(SessionStatus.ACTIVE);
-        newSession.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        newSession.setStartTime(currentTime);
-
-        Mockito.when(sessionService.createNewSession(any())).thenReturn(newSession);
+        Mockito.when(sessionService.createNewSession(any())).thenReturn(activeSession);
 
         mockMvc.perform(get("/session/initiateSession"))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-               .andExpect(jsonPath("$.id").value(1L))
-               .andExpect(jsonPath("$.sessionCode").value("str1Ar4T54"))
+               .andExpect(jsonPath("$.id").value(sessionId))
                .andExpect(jsonPath("$.status").value("ACTIVE"))
-               .andExpect(jsonPath("$.initiatorUserSessionId").value("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))
+               .andExpect(jsonPath("$.initiatorUserSessionId").value(initiatorUserSessionId))
                .andExpect(jsonPath("$.startTime").value(currentTimeStr))
                .andDo(print());
     }
@@ -73,20 +82,13 @@ public class SessionControllerTest {
         mockMvc.perform(get("/session/initiateSession"))
                .andExpect(status().is5xxServerError())
                .andDo(print());
-
-        Session session = new Session();
-        Mockito.when(sessionService.createNewSession(any())).thenReturn(session);
-
-        mockMvc.perform(get("/session/initiateSession"))
-               .andExpect(status().isInternalServerError())
-               .andDo(print());
     }
 
-    @DisplayName("When validateSession, if sessionCode provided not exists in system, should return Http 404 NOT_FOUND")
+    @DisplayName("When validateSession, if sessionId provided not exists in system, should return Http 404 NOT_FOUND")
     @Test
     public void whenValidateSessionWithInvalidSessionCodeShouldReturnHttp404() throws Exception {
 
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(new ArrayList<>());
+        Mockito.when(sessionService.findById(any())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/session/{sessionCode}", "test"))
                .andExpect(status().isBadRequest())
@@ -99,17 +101,14 @@ public class SessionControllerTest {
                  "should return Http 404 NOT_FOUND")
     @Test
     public void whenValidateSessionWhereStatusIsClosedAndEndedMoreThan1HourShouldReturnHttp404() throws Exception {
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.CLOSED);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusHours(3));
-        s1.setEndTime(LocalDateTime.now().minusHours(2));
-        sessionList.add(s1);
+        Session session = new Session();
+        session.setId(sessionId);
+        session.setStatus(SessionStatus.CLOSED);
+        session.setInitiatorUserSessionId(initiatorUserSessionId);
+        session.setStartTime(LocalDateTime.now().minusHours(3));
+        session.setEndTime(LocalDateTime.now().minusHours(2));
 
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(sessionList);
+        Mockito.when(sessionService.findById(any())).thenReturn(Optional.of(session));
 
         mockMvc.perform(get("/session/{sessionCode}", "test"))
                .andExpect(status().isBadRequest())
@@ -122,26 +121,21 @@ public class SessionControllerTest {
                  "should return Session")
     @Test
     public void whenValidateSessionWhereStatusIsClosedAndEndedLessThan1HourShouldReturnSession() throws Exception {
+        Session session = new Session();
+        session.setId(sessionId);
+        session.setStatus(SessionStatus.CLOSED);
+        session.setInitiatorUserSessionId(initiatorUserSessionId);
+        session.setStartTime(LocalDateTime.now().minusHours(3));
+        session.setEndTime(LocalDateTime.now().minusMinutes(2));
 
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.CLOSED);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusHours(3));
-        s1.setEndTime(LocalDateTime.now().minusMinutes(2));
-        sessionList.add(s1);
+        Mockito.when(sessionService.findById(sessionId)).thenReturn(Optional.of(session));
 
-        Mockito.when(sessionService.findBySessionCodeOrderByStartTimeDesc("str1Ar4T54")).thenReturn(sessionList);
-
-        mockMvc.perform(get("/session/{sessionCode}", "str1Ar4T54"))
+        mockMvc.perform(get("/session/{sessionCode}", sessionId))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-               .andExpect(jsonPath("$.id").value(1L))
-               .andExpect(jsonPath("$.sessionCode").value("str1Ar4T54"))
+               .andExpect(jsonPath("$.id").value(sessionId))
                .andExpect(jsonPath("$.status").value("CLOSED"))
-               .andExpect(jsonPath("$.initiatorUserSessionId").value("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))
+               .andExpect(jsonPath("$.initiatorUserSessionId").value(initiatorUserSessionId))
                .andDo(print());
     }
 
@@ -150,25 +144,14 @@ public class SessionControllerTest {
                  "should return Session")
     @Test
     public void whenValidateSessionWhereStatusIsActiveShouldReturnListOfRestaurant() throws Exception {
+        Mockito.when(sessionService.findById(sessionId)).thenReturn(Optional.of(activeSession));
 
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now());
-        sessionList.add(s1);
-
-        Mockito.when(sessionService.findBySessionCodeOrderByStartTimeDesc("str1Ar4T54")).thenReturn(sessionList);
-
-        mockMvc.perform(get("/session/{sessionCode}", "str1Ar4T54"))
+        mockMvc.perform(get("/session/{sessionCode}", sessionId))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-               .andExpect(jsonPath("$.id").value(1L))
-               .andExpect(jsonPath("$.sessionCode").value("str1Ar4T54"))
+               .andExpect(jsonPath("$.id").value(sessionId))
                .andExpect(jsonPath("$.status").value("ACTIVE"))
-               .andExpect(jsonPath("$.initiatorUserSessionId").value("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))
+               .andExpect(jsonPath("$.initiatorUserSessionId").value(initiatorUserSessionId))
                .andDo(print());
     }
 
@@ -176,7 +159,7 @@ public class SessionControllerTest {
     @Test
     public void whenEndSessionWithInvalidSessionCodeShouldReturnHttp404NotFound() throws Exception {
 
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(new ArrayList<>());
+        Mockito.when(sessionService.findById(any())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/session/endSession/{sessionCode}", "test")
                                 .param("userSessionId", "sampleParam"))
@@ -187,38 +170,30 @@ public class SessionControllerTest {
     @DisplayName("Given userSessionId that is not the initiator of the session, when endSession, should return Http 401 UNAUTHORIZED")
     @Test
     public void givenUserSessionIdThatIsNotInitiatorWhenEndSessionShouldReturnHttp401Unauthorized() throws Exception {
+        Session session = new Session();
+        session.setId(sessionId);
+        session.setStatus(SessionStatus.ACTIVE);
+        session.setInitiatorUserSessionId(initiatorUserSessionId);
+        session.setStartTime(currentTime);
 
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusMinutes(20));
-        sessionList.add(s1);
+        Mockito.when(sessionService.findById(sessionId)).thenReturn(Optional.of(session));
 
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(sessionList);
-
-        mockMvc.perform(get("/session/endSession/{sessionCode}", "test")
+        mockMvc.perform(get("/session/endSession/{sessionCode}", sessionId)
                                 .param("userSessionId", "sampleParam"))
                .andExpect(status().isUnauthorized())
                .andDo(print());
     }
 
-    @DisplayName("Given userSessionId that is not the initiator of the session, when endSession, should return Http 400 BAD_REQUEST")
+    @DisplayName("Given session status is Closed, when endSession, should return Http 400 BAD_REQUEST")
     @Test
     public void givenSessionStatusIsClosedWhenEndSessionShouldReturnHttp400BadRequest() throws Exception {
+        Session session = new Session();
+        session.setId(sessionId);
+        session.setStatus(SessionStatus.CLOSED);
+        session.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
+        session.setStartTime(currentTime);
 
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.CLOSED);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusMinutes(20));
-        sessionList.add(s1);
-
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(sessionList);
+        Mockito.when(sessionService.findById(sessionId)).thenReturn(Optional.of(session));
 
         mockMvc.perform(get("/session/endSession/{sessionCode}", "test")
                                 .param("userSessionId", "fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))
@@ -230,17 +205,8 @@ public class SessionControllerTest {
     @Test
     public void givenExceptionHappenedWhenEndSessionShouldReturnHttp500InternalServerError() throws Exception {
 
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusMinutes(20));
-        sessionList.add(s1);
-
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(sessionList);
-        Mockito.when(sessionService.endSession(s1)).thenThrow(RuntimeException.class);
+        Mockito.when(sessionService.findById(any())).thenReturn(Optional.of((activeSession)));
+        Mockito.when(sessionService.endSession(activeSession)).thenThrow(RuntimeException.class);
 
         mockMvc.perform(get("/session/endSession/{sessionCode}", "test")
                                 .param("userSessionId", "fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))
@@ -251,17 +217,7 @@ public class SessionControllerTest {
     @DisplayName("Given valid sessionCode and userSessionID, when endSession, should return Http 200 ok")
     @Test
     public void givenValidSessionCodeAndUserSessionIdWhenEndSessionShouldReturnHttp200ok() throws Exception {
-
-        List<Session> sessionList = new ArrayList<>();
-        Session s1 = new Session();
-        s1.setId(1L);
-        s1.setSessionCode("str1Ar4T54");
-        s1.setStatus(SessionStatus.ACTIVE);
-        s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
-        s1.setStartTime(LocalDateTime.now().minusMinutes(20));
-        sessionList.add(s1);
-
-        Mockito.when(sessionService.findActiveSessionBySessionCode(any())).thenReturn(sessionList);
+        Mockito.when(sessionService.findById(any())).thenReturn(Optional.of((activeSession)));
 
         mockMvc.perform(get("/session/endSession/{sessionCode}", "test")
                                 .param("userSessionId", "fnqwue3h1o8yr012porjnpqfnvoq283yr10iej"))

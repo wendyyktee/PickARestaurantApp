@@ -1,6 +1,6 @@
 export interface Session {
   id: number,
-  sessionCode: string,
+  // sessionCode: string,
   status: string,
   initiatorUserSessionId: string
   // httpSessionId: string

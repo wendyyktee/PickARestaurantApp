@@ -25,9 +25,9 @@ export class SessionComponent {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const sessionCode = params['sessionCode'];
+      const sessionId = params['sessionId'];
 
-      this.dataService.setSessionCode(sessionCode);
+      this.dataService.setId(sessionId);
       this.validateSession();
     });
     this.sessionUrl = location.href;
@@ -41,19 +41,19 @@ export class SessionComponent {
 
   validateSession() {
     return this.http
-      .get<any>('http://localhost:8080/session/' + this.dataService.session.sessionCode)
+      .get<any>('http://localhost:8080/session/' + this.dataService.session.id)
       .subscribe(response => {
           this.isValidSession = true;
 
           this.dataService.setId(response.id);
-          this.dataService.setSessionCode(response.sessionCode);
+          // this.dataService.setSessionCode(response.sessionCode);
           this.dataService.setStatus(response.status);
           this.dataService.setInitiatorUserSessionId(response.initiatorUserSessionId);
 
           this.checkIsInitiator();
 
           if(response.status == 'CLOSED'){
-            this.router.navigate(['/result', response.sessionCode])
+            this.router.navigate(['/result', response.id])
           }
         },
         (e: HttpErrorResponse) => {
@@ -74,11 +74,11 @@ export class SessionComponent {
     const params = new HttpParams().append('userSessionId', this.userSessionId);
 
     return this.http
-      .get<any>('http://localhost:8080/session/endSession/' + this.dataService.session.sessionCode, {params})
+      .get<any>('http://localhost:8080/session/endSession/' + this.dataService.session.id, {params})
       .subscribe(response => {
           console.log(response);
 
-          this.router.navigate(['/result', this.dataService.session.sessionCode])
+          this.router.navigate(['/result', this.dataService.session.id])
         },
         (e: HttpErrorResponse) => {
           console.log('validateSession call failed')

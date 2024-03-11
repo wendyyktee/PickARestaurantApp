@@ -16,6 +16,7 @@ import wendy.tee.pickarestaurant.Service.SessionService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/result")
@@ -30,16 +31,16 @@ public class ResultController {
 
     /**
      *
-     * @param sessionCode - Session.sessionCode
+     * @param sessionId - Session.id
      * @return - Result
      * @return - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      */
-    @GetMapping(value = "/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getResultBySessionCode(@PathVariable String sessionCode) {
-        List<Session> optionalSessionList = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
+    @GetMapping(value = "/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getResultBySessionCode(@PathVariable String sessionId) {
+        Optional<Session> optionalSession = sessionService.findById(sessionId);
 
-        if (!optionalSessionList.isEmpty()) {
-            Session session = optionalSessionList.get(0);
+        if (optionalSession.isPresent()) {
+            Session session = optionalSession.get();
             if (session.getStatus().equals(SessionStatus.ACTIVE)
                 || (session.getStatus().equals(SessionStatus.CLOSED)
                     && session.getEndTime().isAfter(LocalDateTime.now().minusHours(1)))) {

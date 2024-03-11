@@ -19,12 +19,12 @@ export class HomeComponent {
     this.http
       .get<any>('http://localhost:8080/session/initiateSession')
       .subscribe(data => {
-        if (data.sessionCode != null) {
+        if (data.id != null) {
           localStorage.setItem('userSessionId', data.initiatorUserSessionId);
 
           this.dataService.setInitiatorUserSessionId(data.initiatorUserSessionId);
-          this.dataService.setSessionCode(data.sessionCode);
-          this.router.navigate(['/session', data.sessionCode])
+          this.dataService.setId(data.id);
+          this.router.navigate(['/session', data.id])
         }
       }),
       (e: HttpErrorResponse) => {

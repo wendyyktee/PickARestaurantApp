@@ -30,7 +30,7 @@ public class RestaurantController {
      * @return - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getRestaurantBySessionCode(@RequestParam Long sessionId) {
+    public ResponseEntity<?> getRestaurantBySessionCode(@RequestParam String sessionId) {
         Optional<Session> optionalSession = sessionService.findById(sessionId);
 
         if (optionalSession.isPresent()) {

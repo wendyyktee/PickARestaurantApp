@@ -11,26 +11,26 @@ import {CommonErrorPopupService} from "../common-error-popup/common-error-popup.
 export class ResultComponent {
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router,  private commonErrorPopupService: CommonErrorPopupService) {}
 
-  sessionCode: string = "";
+  sessionId: string = "";
   pickedRestaurantName: string = "";
 
   ngBeforeViewInit() {
     this.route.params.subscribe(params => {
-      this.sessionCode = params['sessionCode']
+      this.sessionId = params['sessionId']
       this.getResult();
     });
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.sessionCode = params['sessionCode']
+      this.sessionId = params['sessionId']
       this.getResult();
     });
   };
 
   getResult() {
     return this.http
-      .get<any>('http://localhost:8080/result/' + this.sessionCode)
+      .get<any>('http://localhost:8080/result/' + this.sessionId)
       .subscribe(response => {
           this.pickedRestaurantName = response.pickedRestaurantName;
         },

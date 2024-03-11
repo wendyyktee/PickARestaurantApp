@@ -46,7 +46,6 @@ export class SessionComponent {
           this.isValidSession = true;
 
           this.dataService.setId(response.id);
-          // this.dataService.setSessionCode(response.sessionCode);
           this.dataService.setStatus(response.status);
           this.dataService.setInitiatorUserSessionId(response.initiatorUserSessionId);
 
@@ -76,8 +75,7 @@ export class SessionComponent {
     return this.http
       .get<any>('http://localhost:8080/session/endSession/' + this.dataService.session.id, {params})
       .subscribe(response => {
-          console.log(response);
-
+          localStorage.removeItem("userSessionId");
           this.router.navigate(['/result', this.dataService.session.id])
         },
         (e: HttpErrorResponse) => {

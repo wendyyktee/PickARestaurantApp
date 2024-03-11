@@ -32,19 +32,19 @@ public class ResultServiceTest {
     @Test
     public void givenANewResultShouldSaveARestaurant() {
         Result result = new Result();
-        result.setId(1l);
-        result.setSessionId(2000l);
-        result.setPickedRestaurantId(3000l);
+        result.setId(1L);
+        result.setSessionId(2000L);
+        result.setPickedRestaurantId(3000L);
         result.setPickedRestaurantName("Xiao Fang cafe");
 
         Mockito.when(resultRepository.save(any())).thenReturn(result);
 
-        Result createdResult = resultService.addResult(2000l, 3000l, "Xiao Fang cafe");
+        Result createdResult = resultService.addResult(2000L, 3000L, "Xiao Fang cafe");
 
         assertThat(createdResult).isNotNull();
-        assertThat(createdResult.getId()).isEqualTo(1l);
-        assertThat(createdResult.getSessionId()).isEqualTo(2000l);
-        assertThat(createdResult.getPickedRestaurantId()).isEqualTo(3000l);
+        assertThat(createdResult.getId()).isEqualTo(1L);
+        assertThat(createdResult.getSessionId()).isEqualTo(2000L);
+        assertThat(createdResult.getPickedRestaurantId()).isEqualTo(3000L);
         assertThat(createdResult.getPickedRestaurantName()).isEqualTo("Xiao Fang cafe");
     }
 
@@ -53,22 +53,22 @@ public class ResultServiceTest {
     public void givenSessionIdShouldReturnListOfRestaurantWithCorrespondingSessionId() {
         List<Result> list1 = new ArrayList<>();
         Result result = new Result();
-        result.setId(1l);
-        result.setSessionId(2000l);
-        result.setPickedRestaurantId(3000l);
+        result.setId(1L);
+        result.setSessionId(2000L);
+        result.setPickedRestaurantId(3000L);
         result.setPickedRestaurantName("Xiao Fang cafe");
 
         list1.add(result);
 
-        Mockito.when(resultRepository.findBySessionId(2000l)).thenReturn(list1);
+        Mockito.when(resultRepository.findBySessionId(2000L)).thenReturn(list1);
 
-        Result queryResult = resultService.findBySessionId(2000l);
+        Result queryResult = resultService.findBySessionId(2000L);
 
         Assertions.assertThat(queryResult).isNotNull();
         assertThat(queryResult).isNotNull();
-        assertThat(queryResult.getId()).isEqualTo(1l);
-        assertThat(queryResult.getSessionId()).isEqualTo(2000l);
-        assertThat(queryResult.getPickedRestaurantId()).isEqualTo(3000l);
+        assertThat(queryResult.getId()).isEqualTo(1L);
+        assertThat(queryResult.getSessionId()).isEqualTo(2000L);
+        assertThat(queryResult.getPickedRestaurantId()).isEqualTo(3000L);
         assertThat(queryResult.getPickedRestaurantName()).isEqualTo("Xiao Fang cafe");
     }
 

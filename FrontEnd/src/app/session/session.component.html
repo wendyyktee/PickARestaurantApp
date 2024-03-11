@@ -1,4 +1,11 @@
 <div class="session-container" *ngIf="isValidSession">
+    <div class="join-div">
+      <p>Invite your friends to join with url below!</p>
+      <div class="join-url-div">
+      <textarea class="url-textbox" disabled="true" #inputTarget>{{ sessionUrl }}</textarea>
+      <button [ngxClipboard]="inputTarget">Copy</button>
+      </div>
+    </div>
   <div class="button-session" *ngIf="isInitiator">
     <button class="end-session-button" (click)="endSession()">End Session</button>
   </div>

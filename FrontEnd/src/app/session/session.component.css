@@ -1,8 +1,12 @@
 .session-container {
   text-align: left;
-  margin: 0.3rem;
-  padding: 0.5rem;
+  padding: 0 10px;
 }
+
+.button-session {
+  float: right;
+}
+
 .end-session-button {
   padding: 5px 15px;
   margin: 1px;
@@ -10,6 +14,11 @@
   border-radius: 10%;
 }
 
-.button-session {
-  float: right;
+.join-url-div {
+  display: flex;
+  flex-direction: row;
+}
+
+.url-textbox {
+  min-width: 320px;
 }

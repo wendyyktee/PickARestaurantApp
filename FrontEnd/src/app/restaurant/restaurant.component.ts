@@ -77,7 +77,7 @@ export class RestaurantComponent {
                     console.log('addRestaurant call failed')
                     console.log(e.status)
 
-                    if (e && e.status == 404) {//not found
+                    if (e && e.status == 400) {//BAD_REQUEST
                         this.commonErrorPopupService.openPopup("Invalid Session", "The session is invalid, please make sure the url is" +
                             " correct or try refresh your browser")
                     } else {

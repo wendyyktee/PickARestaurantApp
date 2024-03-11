@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {CommonErrorPopupService} from "../common-error-popup/common-error-popup.service";
 
 @Component({
   selector: 'app-result',
@@ -8,7 +9,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
   styleUrl: './result.component.css',
 })
 export class ResultComponent {
-  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router,  private commonErrorPopupService: CommonErrorPopupService) {}
 
   sessionCode: string = "";
   pickedRestaurantName: string = "";
@@ -36,7 +37,12 @@ export class ResultComponent {
         (e: HttpErrorResponse) => {
           console.log('validateSession call failed')
           console.log(e.status)
-
+          if(e && e.status == 400){//BAD_REQUEST
+            this.commonErrorPopupService.openPopup("Invalid Session", "The session is invalid.")
+          }
+          else{
+            this.commonErrorPopupService.openPopup("Unexpected Error", "Please try again later or contact Administrator.")
+          }
         });
   }
 

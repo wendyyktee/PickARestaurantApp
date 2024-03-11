@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wendy.tee.pickarestaurant.Enum.SessionStatus;
@@ -38,10 +39,10 @@ public class SessionController {
      * to verification when end session     *
      *
      * @param httpSession - get id from http session for identify initiator use
-     * @return Session object if session initiate successfully
-     * @throws org.springframework.web.client.HttpServerErrorException.InternalServerError if session initiate failed
+     * @return - Session object if session initiate successfully
+     * @throws - HttpStatus.INTERNAL_SERVER_ERROR if session initiate failed
      */
-    @GetMapping("/initiateSession")
+    @GetMapping(value = "/initiateSession", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> initiateSession(HttpSession httpSession) {
         Session session = sessionService.createNewSession(httpSession.getId());
 
@@ -68,11 +69,11 @@ public class SessionController {
      * 3. Valid session - session code exists in Database
      * and (session_status = ACTIVE or (session_status = CLOSED & end_time < 1 hour))
      *
-     * @param sessionCode
-     * @return Session object if session code provided is valid
-     * @return HttpStatus.NOT_FOUND if session code provided is invalid
+     * @param sessionCode - Session.sessionCode
+     * @return - Session object if session code provided is valid
+     * @return - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      */
-    @GetMapping("/{sessionCode}")
+    @GetMapping(value = "/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> validateSession(@PathVariable String sessionCode) {
         List<Session> optionalSessionList = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
 
@@ -84,9 +85,9 @@ public class SessionController {
 
                 return new ResponseEntity<>(session, HttpStatus.OK);
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -95,11 +96,10 @@ public class SessionController {
      *                      userSessionID provided here should be the same userSessionId when initiate the session
      * @return - HttpStatus.OK & picked restaurant name if the session ended successfully
      * - HttpStatus.INTERNAL_SERVER_ERROR if session ended failed
-     * - HttpStatus.BAD_REQUEST if the session requested already ended
+     * - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
      * - HttpStatus.UNAUTHORIZED if the userSessionId is not same as the initiatorUserSessionId
-     * - HttpStatus.NOT_FOUND if the sessionCode provided is not exists in database
      */
-    @GetMapping("/endSession/{sessionCode}")
+    @GetMapping(value = "/endSession/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> endSession(@PathVariable String sessionCode, @RequestParam String userSessionId) {
 
         List<Session> optionalSessionList = sessionService.findActiveSessionBySessionCode(sessionCode);
@@ -127,6 +127,6 @@ public class SessionController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

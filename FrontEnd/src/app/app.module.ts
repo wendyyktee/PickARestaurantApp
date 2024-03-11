@@ -9,10 +9,10 @@ import { RestaurantComponent } from './restaurant/restaurant.component';
 import { HttpClientModule } from '@angular/common/http';
 import {FormsModule} from "@angular/forms";
 import {SessionDataService} from "./session-data.service";
-import { CookieService } from 'ngx-cookie-service';
 import { ResultComponent } from './result/result.component';
 import { InvalidSessionPopupComponent } from './invalid-session-popup/invalid-session-popup.component';
 import { CommonErrorPopupComponent } from './common-error-popup/common-error-popup.component';
+import {ClipboardModule} from "ngx-clipboard";
 
 @NgModule({
   declarations: [
@@ -23,13 +23,14 @@ import { CommonErrorPopupComponent } from './common-error-popup/common-error-pop
     InvalidSessionPopupComponent,
     CommonErrorPopupComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule
-  ],
-  providers: [ SessionDataService, CookieService ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        FormsModule,
+        ClipboardModule
+    ],
+  providers: [ SessionDataService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

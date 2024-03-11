@@ -25,18 +25,18 @@ public class RestaurantRepositoryTest {
     public void giveNewRestaurantWhenSaveThenSavedSuccess() {
         Restaurant newRestaurant = new Restaurant();
         newRestaurant.setRestaurantName("Danny's Cafe");
-        newRestaurant.setSessionId(100l);
+        newRestaurant.setSessionId(100L);
 
         Restaurant savedRestaurant = restaurantRepository.save(newRestaurant);
 
         assertThat(savedRestaurant).hasFieldOrPropertyWithValue("restaurantName", "Danny's Cafe");
-        assertThat(savedRestaurant).hasFieldOrPropertyWithValue("sessionId", 100l);
+        assertThat(savedRestaurant).hasFieldOrPropertyWithValue("sessionId", 100L);
     }
 
     @DisplayName("Given session Id, when call findBySessionId, should return Session object with given session id.")
     @Test
     public void givenSessionIdWhenFindBySessionIdShouldReturnAllRestaurantWithCorrespondingSessionId() {
-        Long sessionId = 300l;
+        Long sessionId = 300L;
         Restaurant r1 = new Restaurant();
         r1.setRestaurantName("Danny's Cafe");
         r1.setSessionId(sessionId);
@@ -49,7 +49,7 @@ public class RestaurantRepositoryTest {
 
         Restaurant r3 = new Restaurant();
         r3.setRestaurantName("Kam Fung Restaurant");
-        r3.setSessionId(400l);
+        r3.setSessionId(400L);
         entityManager.persist(r3);
 
         List<Restaurant> dbRestaurantList = restaurantRepository.findBySessionId(sessionId);

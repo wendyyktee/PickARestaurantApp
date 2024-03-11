@@ -1,10 +1,12 @@
 <div class="restaurant">
   <div>
+    <h3>Current Restaurants : </h3>
+
     <div>
-      <h3>Current Restaurants : </h3>
+      <p class="restaurant-list-notes">List will be refresh automatically every 30 seconds</p>
       <button class="refresh-restaurant-button"  (click)="getRestaurantList()">Refresh list</button>
     </div>
-    <p class="restaurant-list-notes">List will be refresh automatically every 30 seconds</p>
+
     <div class="restaurant-list">
       <div tabindex="1" #restaurantListDiv class="restaurant-item" *ngFor="let restaurant of restaurants">
         {{ restaurant.restaurantName }}
@@ -15,6 +17,5 @@
   <div class="add-restaurant-section">
     <input class="add-restaurant-text-box" type="text" [(ngModel)]="restaurantToAdd" />
     <button class="add-restaurant-button"  (click)="addRestaurant()">Add Restaurant</button>
-
   </div>
 </div>

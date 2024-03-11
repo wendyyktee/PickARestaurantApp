@@ -4,7 +4,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {SessionDataService} from "../session-data.service";
 import {CommonErrorPopupService} from "../common-error-popup/common-error-popup.service";
 import {InvalidSessionPopupService} from "../invalid-session-popup/invalid-session-popup.service";
-
+import { ClipboardModule } from 'ngx-clipboard';
 
 @Component({
   selector: 'app-session',
@@ -21,12 +21,16 @@ export class SessionComponent {
   userSessionId = localStorage.getItem('userSessionId') as string;
   isValidSession: boolean = false;
   isInitiator: boolean = false;
+  sessionUrl: string = "";
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.dataService.setSessionCode(params['sessionCode']);
+      const sessionCode = params['sessionCode'];
+
+      this.dataService.setSessionCode(sessionCode);
       this.validateSession();
     });
+    this.sessionUrl = location.href;
   };
 
   checkIsInitiator() {
@@ -57,7 +61,7 @@ export class SessionComponent {
           console.log(e.status)
           this.isValidSession = false;
 
-          if(e && e.status == 404){//not found
+          if(e && e.status == 400){//BAD_REQUEST
               this.invalidServicePopupService.openPopup("Invalid Session", "The session is invalid.")
           }
           else{
@@ -80,11 +84,8 @@ export class SessionComponent {
           console.log('validateSession call failed')
           console.log(e.status)
           if(e){
-            if(e.status == 400){//bad request
+            if(e.status == 400){//BAD_REQUEST
               this.invalidServicePopupService.openPopup("Session expired", "The session is no longer Active.")
-            }
-            else if(e.status == 404){//not found
-              this.invalidServicePopupService.openPopup("Invalid Session", "The session is invalid.")
             }
             else if (e.status == 401){
               this.commonErrorPopupService.openPopup("Unauthorized", "Only initiator is allowed to end session.")

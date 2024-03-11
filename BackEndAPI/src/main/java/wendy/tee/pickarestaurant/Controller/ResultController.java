@@ -2,6 +2,7 @@ package wendy.tee.pickarestaurant.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,13 @@ public class ResultController {
     SessionService sessionService;
 
 
-    @GetMapping("/{sessionCode}")
+    /**
+     *
+     * @param sessionCode - Session.sessionCode
+     * @return - Result
+     * @return - HttpStatus.BAD_REQUEST if the session provided is not exists in database or already ended
+     */
+    @GetMapping(value = "/{sessionCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getResultBySessionCode(@PathVariable String sessionCode) {
         List<Session> optionalSessionList = sessionService.findBySessionCodeOrderByStartTimeDesc(sessionCode);
 
@@ -40,8 +47,8 @@ public class ResultController {
                 Result result = resultService.findBySessionId(session.getId());
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

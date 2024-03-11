@@ -38,7 +38,7 @@ public class SessionServiceTest {
         LocalDateTime currentTime = LocalDateTime.now();
 
         Session newSession = new Session();
-        newSession.setId(1l);
+        newSession.setId(1L);
         newSession.setSessionCode("str1Ar4T54");
         newSession.setStatus(SessionStatus.ACTIVE);
         newSession.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
@@ -49,7 +49,7 @@ public class SessionServiceTest {
         Session session = sessionService.createNewSession("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
 
         assertThat(session).isNotNull();
-        assertThat(session.getId()).isEqualTo(1l);
+        assertThat(session.getId()).isEqualTo(1L);
         assertThat(session.getStatus()).isEqualTo(SessionStatus.ACTIVE);
         assertThat(session.getStartTime()).isEqualTo(currentTime);
 
@@ -100,15 +100,15 @@ public class SessionServiceTest {
     @Test
     public void givenSessionIdWhenFindByIdShouldReturnSessionWithGivenSessionCode() {
         Session s1 = new Session();
-        s1.setId(1l);
+        s1.setId(1L);
         s1.setSessionCode("str1Ar4T62");
         s1.setStatus(SessionStatus.ACTIVE);
         s1.setInitiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej");
         s1.setStartTime(LocalDateTime.now());
 
-        Mockito.when(sessionRepository.findById(1l)).thenReturn(Optional.of(s1));
+        Mockito.when(sessionRepository.findById(1L)).thenReturn(Optional.of(s1));
 
-        Optional<Session> optionalSession = sessionService.findById(1l);
+        Optional<Session> optionalSession = sessionService.findById(1L);
 
         Assertions.assertThat(optionalSession.isPresent()).isEqualTo(true);
         Assertions.assertThat(optionalSession.get()).isEqualTo(s1);
@@ -120,7 +120,7 @@ public class SessionServiceTest {
         LocalDateTime currentTime = LocalDateTime.now();
 
         Session s1 = Session.builder()
-                            .id(1l)
+                            .id(1L)
                             .sessionCode("testing123")
                             .status(SessionStatus.ACTIVE)
                             .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")
@@ -128,7 +128,7 @@ public class SessionServiceTest {
                             .build();
 
         Session s2 = Session.builder()
-                            .id(1l)
+                            .id(1L)
                             .sessionCode("testing123")
                             .status(SessionStatus.CLOSED)
                             .initiatorUserSessionId("fnqwue3h1o8yr012porjnpqfnvoq283yr10iej")

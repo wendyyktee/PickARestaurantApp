@@ -9,16 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import wendy.tee.pickarestaurant.Enum.SessionStatus;
 import wendy.tee.pickarestaurant.Model.Restaurant;
-import wendy.tee.pickarestaurant.Model.Session;
 import wendy.tee.pickarestaurant.Repository.RestaurantRepository;
-import wendy.tee.pickarestaurant.Repository.SessionRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,8 +35,8 @@ public class RestaurantServiceTest {
     @Test
     public void givenANewRestaurantShouldSaveARestaurant() {
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(100l);
-        restaurant.setSessionId(20l);
+        restaurant.setId(100L);
+        restaurant.setSessionId(20L);
         restaurant.setRestaurantName("Danny's");
 
         Mockito.when(restaurantRepository.save(any())).thenReturn(restaurant);
@@ -49,8 +44,8 @@ public class RestaurantServiceTest {
         Restaurant createdRestaurant = restaurantService.addRestaurant(restaurant);
 
         assertThat(createdRestaurant).isNotNull();
-        assertThat(createdRestaurant.getId()).isEqualTo(100l);
-        assertThat(createdRestaurant.getSessionId()).isEqualTo(20l);
+        assertThat(createdRestaurant.getId()).isEqualTo(100L);
+        assertThat(createdRestaurant.getSessionId()).isEqualTo(20L);
         assertThat(createdRestaurant.getRestaurantName()).isEqualTo("Danny's");
     }
 
@@ -59,26 +54,26 @@ public class RestaurantServiceTest {
     public void givenSessionIdShouldReturnListOfRestaurantWithCorrespondingSessionId() {
         List<Restaurant> list1 = new ArrayList<>();
         Restaurant r1 = new Restaurant();
-        r1.setId(300l);
-        r1.setSessionId(20l);
+        r1.setId(300L);
+        r1.setSessionId(20L);
         r1.setRestaurantName("KFF");
 
         Restaurant r2 = new Restaurant();
-        r2.setId(100l);
-        r2.setSessionId(20l);
+        r2.setId(100L);
+        r2.setSessionId(20L);
         r2.setRestaurantName("Danny's");
 
         Restaurant r3 = new Restaurant();
-        r3.setId(200l);
-        r3.setSessionId(20l);
+        r3.setId(200L);
+        r3.setSessionId(20L);
         r3.setRestaurantName("MCD");
         list1.add(r1);
         list1.add(r2);
         list1.add(r3);
 
-        Mockito.when(restaurantRepository.findBySessionId(20l)).thenReturn(list1);
+        Mockito.when(restaurantRepository.findBySessionId(20L)).thenReturn(list1);
 
-        List<Restaurant> restaurantList = restaurantService.findBySessionId(20l);
+        List<Restaurant> restaurantList = restaurantService.findBySessionId(20L);
 
         Assertions.assertThat(restaurantList).hasSize(3);
         Assertions.assertThat(restaurantList).contains(r1, r2, r3);
@@ -89,26 +84,26 @@ public class RestaurantServiceTest {
     public void GivenSessionIdWhenCallRandomPickARestaurantBySessionIdShouldReturnARestaurantFromListOfRestaurants() {
         List<Restaurant> list1 = new ArrayList<>();
         Restaurant r1 = new Restaurant();
-        r1.setId(300l);
-        r1.setSessionId(20l);
+        r1.setId(300L);
+        r1.setSessionId(20L);
         r1.setRestaurantName("KFF");
 
         Restaurant r2 = new Restaurant();
-        r2.setId(100l);
-        r2.setSessionId(20l);
+        r2.setId(100L);
+        r2.setSessionId(20L);
         r2.setRestaurantName("Danny's");
 
         Restaurant r3 = new Restaurant();
-        r3.setId(200l);
-        r3.setSessionId(20l);
+        r3.setId(200L);
+        r3.setSessionId(20L);
         r3.setRestaurantName("MCD");
         list1.add(r1);
         list1.add(r2);
         list1.add(r3);
 
-        Mockito.when(restaurantRepository.findBySessionId(20l)).thenReturn(list1);
+        Mockito.when(restaurantRepository.findBySessionId(20L)).thenReturn(list1);
 
-        Restaurant pickedRestaurant = restaurantService.randomPickARestaurantBySessionId(20l);
+        Restaurant pickedRestaurant = restaurantService.randomPickARestaurantBySessionId(20L);
 
         Assertions.assertThat(pickedRestaurant).isNotNull();
         Assertions.assertThat(pickedRestaurant).isIn(list1);
